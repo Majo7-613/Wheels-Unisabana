@@ -1,0 +1,29 @@
+{
+  // Nodemon configuration for backend development:
+  // - Watches only the backend "src" directory to minimize filesystem noise in synced folders (OneDrive/WSL).
+  // - Restarts the Node process when .js/.json files change, applying a small debounce.
+  // - Ignores tests, frontend, VCS and node_modules to prevent infinite loops and high CPU usage.
+  // - This setup favors stability on Windows + WSL2 by reducing file watcher churn.
+
+  // Folders and files Nodemon will watch for changes.
+  // Scoping to "src" reduces filesystem churn and prevents restarts from unrelated changes in the repo root.
+  "watch": ["src"],
+
+  // File extensions that should trigger a restart when modified.
+  // Limiting to ".js" and ".json" avoids extra CPU usage caused by watching binary or build artifacts.
+  "ext": "js,json",
+
+  // Paths Nodemon must ignore to avoid noisy or infinite restart loops.
+  // - "src/tests/*": Jest writes temp artifacts during test runs.
+  // - "../frontend/*": Editing the frontend should not bounce the backend.
+  // - "node_modules/*", ".git/*": Large I/O surfaces; never watch.
+  "ignore": ["src/tests/*", "../frontend/*", "node_modules/*", ".git/*"],
+
+  // Debounce delay (ms) to wait after a change before restarting.
+  // Helps editors that save multiple files in rapid succession; improves dev ergonomics and stability.
+  "delay": "200",
+
+  // Note:
+  // On Windows/WSL/OneDrive environments, file watcher behavior can be noisy.
+  // Keeping scope small and ignoring broad directories avoids hot-reload storms and high CPU usage.
+}

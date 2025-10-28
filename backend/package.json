@@ -1,0 +1,60 @@
+{
+  "name": "wheels-backend", // Package name for backend service (used by npm and tooling).
+  "private": true,          // Prevents accidental publication to npm registry.
+  "version": "0.1.0",       // Semantic version; informational in private projects.
+  "type": "module",         // Enables ES Modules syntax (import/export) across the backend codebase.
+
+  "scripts": {
+    // Dev script: runs server with hot-reload via nodemon (watches files and restarts on change).
+    "dev": "nodemon src/server.js",
+
+    // Start script: production-style entry (no hot-reload). Used by process managers and Docker in prod.
+    "start": "node src/server.js",
+
+    // Test runner: enables Jest with ESM/top-level await support using Node's vm modules.
+    // --runInBand avoids parallelism issues when tests touch shared resources.
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand"
+  },
+
+  "dependencies": {
+    // HTTP client used in external service integrations (e.g., Google Maps Distance Matrix).
+    "axios": "^1.7.7",
+    // Password hashing library; use bcrypt with adequate salt rounds for security.
+    "bcryptjs": "^2.4.3",
+    // CORS middleware for Express; needed when FE and BE run on different origins during dev.
+    "cors": "^2.8.5",
+    // Loads environment variables from .env into process.env at startup.
+    "dotenv": "^16.4.5",
+    // Express web framework for routing, middleware, and HTTP handling.
+    "express": "^4.21.1",
+    // JWT creation/verification for stateless authentication flows.
+    "jsonwebtoken": "^9.0.2",
+    // MongoDB ODM for schemas, validation, and database interaction.
+    "mongoose": "^8.7.0",
+    // Redis client (optional cache layer for maps/estimates); connect lazily in services.
+    "redis": "^4.7.0",
+    // Serves auto-generated OpenAPI/Swagger UI for API docs.
+    "swagger-ui-express": "^5.0.1"
+  },
+
+  "devDependencies": {
+    // Jest test framework.
+    "jest": "^29.7.0",
+    // Dev-time file watcher/reloader for Node processes.
+    "nodemon": "^3.1.7",
+    // Supertest HTTP assertions for Express endpoints.
+    "supertest": "^7.0.0"
+  },
+
+  "jest": {
+    // Node environment for tests (no DOM APIs).
+    "testEnvironment": "node",
+    // Treat ".js" files as ES Modules to align with "type": "module".
+    "extensionsToTreatAsEsm": [".js"],
+    // No transform step; tests are written in plain JS/ESM and run directly.
+    "transform": {}
+  }
+
+  // Note:
+  // Keep secrets out of package.json. Use backend/.env for sensitive values (JWT_SECRET, MONGO_URI, GOOGLE_MAPS_KEY).
+}
