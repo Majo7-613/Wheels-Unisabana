@@ -16,15 +16,6 @@ Autenticación primero: un usuario no autenticado solo debe ver Login/Registro; 
 - Docker (opcional para MongoDB y Redis)
 - PowerShell (Windows) para ejecutar scripts
 
-## Preparación de diseños (UI)
-Coloca los PNG de /Designs dentro de:
-- frontend/public/Designs/
-  - Add Pickup Points (Driver).png
-  - Calculate Distance (System).png
-  - ...otros
-
-Los componentes de features referencian esas rutas públicas.
-
 ## Instalación y ejecución (rápido)
 - Opción 1 (un clic, Windows):
   - PowerShell en la raíz del proyecto:
@@ -43,38 +34,6 @@ Los componentes de features referencian esas rutas públicas.
      - npm run dev:win
      - Frontend: http://localhost:5173
      - Backend: http://localhost:4000
-
-## Checklist inmediato (haz esto ya)
-1) Cierra todas las terminales abiertas (para evitar procesos colgados).
-2) Abre PowerShell en la raíz del proyecto:
-   - powershell -ExecutionPolicy Bypass -File .\scripts\run-all.ps1
-   - Esto instala deps, crea backend/.env (si falta), instala @vitejs/plugin-react si no existe, y levanta FE/BE.
-3) Verifica que abre:
-   - Backend: http://localhost:4000/health debe responder { "ok": true }
-   - Docs: http://localhost:4000/api-docs
-   - Frontend: http://localhost:5173
-4) Si el frontend no levanta por el plugin:
-   - cd frontend && npm i -D @vitejs/plugin-react && cd ..
-   - Vuelve a correr: powershell -ExecutionPolicy Bypass -File .\scripts\run-all.ps1
-5) Diseños (PNG):
-   - Copia los archivos de /Designs a frontend/public/Designs/ (mismo nombre de los PNG).
-   - Refresca http://localhost:5173.
-6) Auth primero (flujo mínimo):
-   - Regístrate con correo @unisabana.edu.co desde /register.
-   - Inicia sesión en /login y valida que el navbar muestre Logout y rutas de features.
-7) Pruebas rápidas del backend (sin Google/Mongo):
-   - Salud: curl http://localhost:4000/health
-   - Waze: curl "http://localhost:4000/navigation/waze?lat=4.65&lng=-74.05"
-   - Distance (sin key): curl "http://localhost:4000/maps/distance?origin=4.65,-74.05&destination=4.86,-74.03" → debe dar 500 si no configuraste GOOGLE_MAPS_KEY.
-8) Cuando uses Google/Mongo:
-   - Edita backend/.env y define: MONGO_URI=mongodb://localhost:27017/wheels y GOOGLE_MAPS_KEY=tu_api_key
-   - Reinicia solo el backend (cierra la ventana del backend y vuelve a ejecutar run-all.ps1 o cd backend && npm run dev)
-
-## Diagnóstico rápido
-- “Cannot find @vitejs/plugin-react” → cd frontend && npm i -D @vitejs/plugin-react
-- “MONGO_URI undefined” y reinicios → ya está mitigado; edita backend/.env cuando quieras conectar Mongo.
-- “connection refused” → espera 5–10s, revisa http://localhost:4000/health y http://localhost:5173; firewall/antivirus puede bloquear Node.
-- Puertos ocupados → netstat -ano | findstr :4000 y :5173, cierra procesos que bloqueen.
 
 ## Estructura (resumen)
 - frontend: Vite + Tailwind + Router + Tests
@@ -107,17 +66,6 @@ REDIS_URL=redis://localhost:6379
 ## Pruebas (backend)
 - npm test
 - Nota: los tests mockean Mongo/Redis y validan health, waze, y errores de Distance Matrix.
-
-## Problemas comunes
-- Vite error @vitejs/plugin-react:
-  - Ejecuta el script .\scripts\run-all.ps1 (instala el plugin automáticamente) o:
-  - cd frontend && npm i -D @vitejs/plugin-react
-- Backend reinicia por MONGO_URI:
-  - Asegúrate de tener backend/.env o deja MONGO_URI vacío (arranca sin Mongo).
-- Connection refused:
-  - Comprueba http://localhost:4000/health y http://localhost:5173
-  - Espera unos segundos tras arrancar; revisa firewall/antivirus.
-  - netstat -ano | findstr :4000 y :5173 para verificar puertos.
 
 ## Si el backend “no abre”
 - Verifica health: http://localhost:4000/health (debe responder {"ok": true})
